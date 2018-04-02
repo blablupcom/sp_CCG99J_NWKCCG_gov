@@ -102,6 +102,7 @@ soup = BeautifulSoup(html, "lxml")
 title_divs = soup.find('div', 'entry entry-content').find_all('p')
 for title_div in title_divs:
     block = title_div.find('a')
+    print block.text
     url = block['href']
     title = block.text.strip()
     csvMth = title.strip().split()[-1]
