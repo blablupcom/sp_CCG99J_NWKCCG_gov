@@ -99,9 +99,10 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 # print soup
-title_divs = soup.find_all('a')
-print title_divs
+title_divs = soup.find_all('a', href=True)
+# print title_divs
 for title_div in title_divs:
+    print title_div
     if '.pdf' in title_div['href']:
         block = title_div.find('a')
         print block.text
