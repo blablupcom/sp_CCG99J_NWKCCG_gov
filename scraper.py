@@ -99,7 +99,7 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
-title_divs = soup.find_all('p')
+title_divs = soup.find('div', 'entry entry-content').find_all('p')
 for title_div in title_divs:
     block = title_div.find('a')
     url = block['href']
