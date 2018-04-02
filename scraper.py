@@ -102,9 +102,8 @@ soup = BeautifulSoup(html, "lxml")
 title_divs = soup.find_all('a', href=True)
 # print title_divs
 for title_div in title_divs:
-    print title_div
     if '.pdf' in title_div['href']:
-        block = title_div.find('a')
+        block = title_div
         print block.text
         url = block['href']
         title = block.text.strip()
