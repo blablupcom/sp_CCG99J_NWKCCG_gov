@@ -9,6 +9,7 @@ import urllib2
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+
 #### FUNCTIONS 1.0
 
 def validateFilename(filename):
@@ -50,12 +51,11 @@ def validateURL(url):
         else:
             ext = os.path.splitext(url)[1]
         validURL = r.getcode() == 200
-        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx']
+        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx', '.pdf']
         return validURL, validFiletype
     except:
         print ("Error validating URL.")
         return False, False
-
 
 
 def validate(filename, file_url):
@@ -82,10 +82,11 @@ def convert_mth_strings ( mth_string ):
         mth_string = mth_string.replace(k, v)
     return mth_string
 
+
 #### VARIABLES 1.0
 
-entity_id = "NFTRL4_TRWNT_gov"
-url = "https://data.gov.uk/dataset/financial-transactions-data-royal-wolverhampton-hospitals-nhs-trust"
+entity_id = "CCG00J_NNDCCG_gov"
+url = "http://www.northdurhamccg.nhs.uk/payments-over-25k/"
 errors = 0
 data = []
 
@@ -93,20 +94,20 @@ data = []
 #### READ HTML 1.0
 
 html = urllib2.urlopen(url)
-soup = BeautifulSoup(html, 'lxml')
+soup = BeautifulSoup(html, "lxml")
 
 
 #### SCRAPE DATA
 
-blocks = soup.find_all('div', 'dataset-resource-text')
-for block in blocks:
-    title = block.find('span', 'inner-cell').text.strip().split()
-    url = block.find('div', 'inner-cell').find_all('span')[1].find('a')['href']
-    csvMth = title[2][:3]
-    csvYr = title[1]
+title_divs = soup.find_all('p')
+for title_div in title_divs:
+    block = title_div.find('a')
+    url = block['href']
+    title = block.text.strip()
+    csvMth = title.strip().split()[-1]
+    csvYr = title.strip().split()[-2][:3]
     csvMth = convert_mth_strings(csvMth.upper())
     data.append([csvYr, csvMth, url])
-
 
 #### STORE DATA 1.0
 
