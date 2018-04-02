@@ -63,7 +63,7 @@ def validate(filename, file_url):
     validURL, validFiletype = validateURL(file_url)
     if not validFilename:
         print filename, "*Error: Invalid filename*"
-        print file_url
+        print file_url.encode('utf-8')
         return False
     if not validURL:
         print filename, "*Error: Invalid URL*"
@@ -105,8 +105,8 @@ for title_div in title_divs:
     if '.pdf' in title_div['href']:
         url = title_div['href']
         title = title_div.text.strip()
-        csvMth = title.split()[-1]
-        csvYr = title.split()[-2][:3]
+        csvYr = title.split()[-1]
+        csvMth = title.split()[-2][:3]
         csvMth = convert_mth_strings(csvMth.upper())
         data.append([csvYr, csvMth, url])
 
