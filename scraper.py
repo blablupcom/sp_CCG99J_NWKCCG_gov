@@ -99,16 +99,17 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
-title_divs = soup.find('div', id='content').find_all('p')
+title_divs = soup.find_all('a')
 for title_div in title_divs:
-    block = title_div.find('a')
-    print block.text
-    url = block['href']
-    title = block.text.strip()
-    csvMth = title.strip().split()[-1]
-    csvYr = title.strip().split()[-2][:3]
-    csvMth = convert_mth_strings(csvMth.upper())
-    data.append([csvYr, csvMth, url])
+    if '.pdf' in title_div['href']:
+        block = title_div.find('a')
+        print block.text
+        url = block['href']
+        title = block.text.strip()
+        csvMth = title.strip().split()[-1]
+        csvYr = title.strip().split()[-2][:3]
+        csvMth = convert_mth_strings(csvMth.upper())
+        data.append([csvYr, csvMth, url])
 
 #### STORE DATA 1.0
 
