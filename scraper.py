@@ -64,15 +64,15 @@ def validate(filename, file_url):
     validURL, validFiletype = validateURL(file_url)
     if not validFilename:
         print filename, "*Error: Invalid filename*"
-        print file_url
+        print file_url.encode('utf-8')
         return False
     if not validURL:
         print filename, "*Error: Invalid URL*"
-        print file_url
+        print file_url.encode('utf-8')
         return False
     if not validFiletype:
         print filename, "*Error: Invalid filetype*"
-        print file_url
+        print file_url.encode('utf-8')
         return False
     return True
 
@@ -108,6 +108,8 @@ for title_div in title_divs:
         title = title_div.text.strip()
         csvYr = title.split()[-1]
         csvMth = title.split()[-2][:3]
+        if len(csvYr) == 2:
+            csvYr = '20'+csvYr
         csvMth = convert_mth_strings(csvMth.upper())
         data.append([csvYr, csvMth, url])
 
