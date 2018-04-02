@@ -103,12 +103,10 @@ title_divs = soup.find_all('a', href=True)
 # print title_divs
 for title_div in title_divs:
     if '.pdf' in title_div['href']:
-        block = title_div
-        print block.text
-        url = block['href']
-        title = block.text.strip()
-        csvMth = title.strip().split()[-1]
-        csvYr = title.strip().split()[-2][:3]
+        url = title_div['href']
+        title = title_div.text.strip()
+        csvMth = title.split()[-1]
+        csvYr = title.split()[-2][:3]
         csvMth = convert_mth_strings(csvMth.upper())
         data.append([csvYr, csvMth, url])
 
