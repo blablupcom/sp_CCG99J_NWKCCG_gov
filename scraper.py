@@ -64,15 +64,15 @@ def validate(filename, file_url):
     validURL, validFiletype = validateURL(file_url)
     if not validFilename:
         print filename, "*Error: Invalid filename*"
-        print file_url.encode('utf-8')
+        print file_url
         return False
     if not validURL:
         print filename, "*Error: Invalid URL*"
-        print file_url.encode('utf-8')
+        print file_url
         return False
     if not validFiletype:
         print filename, "*Error: Invalid filetype*"
-        print file_url.encode('utf-8')
+        print file_url
         return False
     return True
 
@@ -86,8 +86,8 @@ def convert_mth_strings ( mth_string ):
 
 #### VARIABLES 1.0
 
-entity_id = "CCG00J_NNDCCG_gov"
-url = "http://www.northdurhamccg.nhs.uk/payments-over-25k/"
+entity_id = "CCG03C_NLWCCG_gov"
+url = "https://www.leedswestccg.nhs.uk/about/publications/expenditure-over-25k/"
 errors = 0
 data = []
 
@@ -99,19 +99,16 @@ soup = BeautifulSoup(html, "lxml")
 
 
 #### SCRAPE DATA
-# print soup
-title_divs = soup.find_all('a', href=True)
-# print title_divs
+
+title_divs = soup.find_all('h1', 'entry__title')
 for title_div in title_divs:
-    if '.pdf' in title_div['href']:
-        url = title_div['href']
-        title = title_div.text.strip()
-        csvYr = title.split()[-1]
-        csvMth = title.split()[-2][:3]
-        if len(csvYr) == 2:
-            csvYr = '20'+csvYr
-        csvMth = convert_mth_strings(csvMth.upper())
-        data.append([csvYr, csvMth, url])
+    block = title_div.find('a')
+    url = block['href']
+    title = block.text.strip()
+    csvMth = title.strip().split()[0][:3]
+    csvYr = title.strip().split()[-1]
+    csvMth = convert_mth_strings(csvMth.upper())
+    data.append([csvYr, csvMth, url])
 
 #### STORE DATA 1.0
 
