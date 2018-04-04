@@ -52,7 +52,7 @@ def validateURL(url):
         else:
             ext = os.path.splitext(url)[1]
         validURL = r.status_code == 200
-        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx', '.pdf']
+        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx', '.pdf', '.xlsm']
         return validURL, validFiletype
     except:
         print ("Error validating URL.")
@@ -86,8 +86,8 @@ def convert_mth_strings ( mth_string ):
 
 #### VARIABLES 1.0
 
-entity_id = "CCG03C_NLWCCG_gov"
-url = "https://www.leedswestccg.nhs.uk/about/publications/expenditure-over-25k/"
+entity_id = "CCG99J_NWKCCG_gov"
+url = "http://www.westkentccg.nhs.uk/about-us/publications/?categoryesctl10652175=9721&p={}"
 errors = 0
 data = []
 
@@ -100,15 +100,21 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
-title_divs = soup.find_all('h1', 'entry__title')
-for title_div in title_divs:
-    block = title_div.find('a')
-    url = block['href']
-    title = block.text.strip()
-    csvMth = title.strip().split()[0][:3]
-    csvYr = title.strip().split()[-1]
-    csvMth = convert_mth_strings(csvMth.upper())
-    data.append([csvYr, csvMth, url])
+for i in range(1, 6):
+    html = urllib2.urlopen(url.format(i))
+    soup = BeautifulSoup(html, "lxml")
+    rows = soup.find_all('a', text=re.compile('Download'))
+    for row in rows:
+        title = row['title']
+        link = 'http://www.westkentccg.nhs.uk'+row['href']
+        if 'Expenditure' in title:
+            csvMth = title.split()[-2][:3]
+            csvYr = title.split()[-1]
+            if 'September' in csvYr:
+                csvMth = '09'
+                csvYr = '2017'
+            csvMth = convert_mth_strings(csvMth.upper())
+            data.append([csvYr, csvMth, link])
 
 #### STORE DATA 1.0
 
